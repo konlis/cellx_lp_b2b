@@ -1,0 +1,203 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**/.env.example)",
+      "Edit(**/.env.example)",
+      "Write(**/.env.example)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Bash(pytest:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(yarn test:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm run test:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(mypy:*)",
+      "Bash(eslint:*)",
+      "Bash(tsc --noEmit:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(echo:*)",
+      "Bash(.claude/scripts/*)",
+      "Bash(.claude/scripts/ralph/*)",
+      "Bash(mkdir:*)"
+    ],
+    "ask": [
+      "Edit(*)",
+      "Write(*)",
+      "Bash(rm:*)",
+      "Bash(rm -rf:*)",
+      "Bash(docker restart:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "Bash(systemctl restart:*)",
+      "Bash(systemctl stop:*)",
+      "Bash(kubectl delete:*)",
+      "Bash(kubectl rollout:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(yarn deploy:*)",
+      "Bash(pnpm run deploy:*)",
+      "Bash(pnpm deploy:*)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(yarn add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm add:*)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.development)",
+      "Read(**/.env.production)",
+      "Read(**/.env.test)",
+      "Edit(**/.env)",
+      "Edit(**/.env.local)",
+      "Edit(**/.env.development)",
+      "Edit(**/.env.production)",
+      "Edit(**/.env.test)",
+      "Write(**/.env)",
+      "Write(**/.env.local)",
+      "Write(**/.env.development)",
+      "Write(**/.env.production)",
+      "Write(**/.env.test)",
+      "Read(**/secrets/**)",
+      "Edit(**/secrets/**)",
+      "Write(**/secrets/**)",
+      "Read(**/terraform.tfvars)",
+      "Read(**/secrets.tfvars)",
+      "Read(**/terraform.tfstate)",
+      "Read(**/terraform.tfstate.backup)",
+      "Read(**/.terraform/**)",
+      "Edit(**/terraform.tfvars)",
+      "Edit(**/secrets.tfvars)",
+      "Edit(**/terraform.tfstate)",
+      "Write(**/terraform.tfvars)",
+      "Write(**/secrets.tfvars)",
+      "Write(**/terraform.tfstate)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)"
+    ]
+  },
+  "thinkingMode": "always",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "_description": "Safety gate: blocks destructive bash commands (rm -rf /, ~, etc.) and sensitive file access (.env, id_rsa, credentials). Note: .env.example files are allowed.",
+        "matcher": "Bash|Read|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/safety_validator.py"
+          }
+        ]
+      },
+      {
+        "_description": "Block sensitive files with detailed error message",
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty'); echo \"$FILE\" | grep -qE '\\.example$' && exit 0; echo \"$FILE\" | grep -qE '(\\.env|secrets|credentials|terraform\\.tfvars|terraform\\.tfstate|\\.terraform/)' && { echo \"BLOCKED: Access denied to sensitive file: $FILE\" >&2; exit 2; } || exit 0"
+          }
+        ]
+      },
+      {
+        "_description": "Audit trail: logs all PreToolUse events to .claude/audit_logs/yyyymmdd_audit.jsonl",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/audit_logger.py"
+          }
+        ]
+      },
+      {
+        "_description": "Skill validator: soft enforcement warnings for skill files",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/skill-validator.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "_description": "Auto-format files after Write/Edit (Ruff for Python, Prettier for JS/TS)",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/auto-format.sh"
+          }
+        ]
+      },
+      {
+        "_description": "Audit trail: logs all PostToolUse events to .claude/audit_logs/yyyymmdd_audit.jsonl",
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/audit_logger.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "_description": "Notification sound",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/notification-sound.sh"
+          }
+        ]
+      },
+      {
+        "_description": "Audit trail: logs all Stop events to .claude/audit_logs/yyyymmdd_audit.jsonl",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/audit_logger.py"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "_description": "Skill suggester: analyzes prompts to suggest relevant skills",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/skill-suggester.py"
+          }
+        ]
+      },
+      {
+        "_description": "Audit trail: logs all user prompt submissions to .claude/audit_logs/yyyymmdd_audit.jsonl",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/audit_logger.py"
+          }
+        ]
+      }
+    ]
+  }
+}
