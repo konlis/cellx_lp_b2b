@@ -260,6 +260,7 @@ h3 {
 }
 
 .mobile-nav a:hover { color: var(--green); }
+.mobile-nav .btn-primary { color: var(--black-deep) !important; }
 
 /* --- Hero Section --- */
 .hero {
@@ -1506,6 +1507,8 @@ h3 {
     grid-template-columns: 1fr;
     text-align: center;
   }
+
+  .footer-logo { justify-self: center; }
 
   .footer-links { justify-content: center; }
   .footer-contact { text-align: center; }
