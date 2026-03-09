@@ -52,7 +52,7 @@
     <a href="/" class="nav-logo" aria-label="Retrofit 24 — strona główna">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 40" height="32">
         <text x="0" y="30" font-family="Montserrat, sans-serif" font-weight="800" font-size="30" fill="#ffffff" letter-spacing="0.02em">Retrofit</text>
-        <text x="170" y="30" font-family="Montserrat, sans-serif" font-weight="800" font-size="30" fill="#7ed957" letter-spacing="0.02em">24</text>
+        <text x="140" y="30" font-family="Montserrat, sans-serif" font-weight="800" font-size="30" fill="#7ed957" letter-spacing="0.02em">24</text>
       </svg>
     </a>
   </div>
@@ -152,5 +152,14 @@
 </footer>
 
 <script src="js/cookies.js"></script>
+<script>
+(function() {
+  var nav = document.querySelector('.navbar');
+  if (!nav) return;
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>

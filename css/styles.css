@@ -1456,6 +1456,15 @@ h3 {
   color: var(--gray-600);
 }
 
+.footer-bottom a {
+  color: var(--gray-400);
+  transition: color var(--transition-fast);
+}
+
+.footer-bottom a:hover {
+  color: var(--green);
+}
+
 /* --- Scroll Animations --- */
 .reveal {
   opacity: 0;
