@@ -1,6 +1,6 @@
 /**
  * Vercel Serverless Function — Contact Form → Resend Email
- * pv-magazyn.pl — Home Fit+ B2B partner inquiries
+ * retrofit24.pl — Home Fit+ B2B partner inquiries
  *
  * SETUP INSTRUCTIONS:
  * 1. Create a Resend account at https://resend.com
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
   }
 
   // CORS: restrict to own origin
-  const allowedOrigin = process.env.ALLOWED_ORIGIN || 'https://pv-magazyn.pl';
+  const allowedOrigin = process.env.ALLOWED_ORIGIN || 'https://retrofit24.pl';
   const origin = req.headers.origin;
   if (origin && origin !== allowedOrigin) {
     return res.status(403).json({ error: 'Forbidden' });
@@ -116,7 +116,7 @@ export default async function handler(req, res) {
       </div>
       ` : ''}
       <p style="margin-top: 24px; font-size: 12px; color: #999;">
-        Wiadomość wysłana z formularza na pv-magazyn.pl
+        Wiadomość wysłana z formularza na retrofit24.pl
       </p>
     </div>
   `;
@@ -129,7 +129,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Home Fit+ <noreply@pv-magazyn.pl>',
+        from: 'Home Fit+ <noreply@retrofit24.pl>',
         to: [recipientEmail],
         reply_to: email,
         subject,

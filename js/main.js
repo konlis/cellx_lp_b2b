@@ -1,5 +1,5 @@
 /**
- * Home Fit+ — Main JavaScript (pv-magazyn.pl)
+ * Home Fit+ — Main JavaScript (retrofit24.pl)
  * Scroll observers, nav behavior, animated counters, FAQ accordion, form handling
  */
 (function () {
@@ -230,6 +230,16 @@
           statusEl.className = 'form-status success';
           statusEl.style.display = 'block';
           form.reset();
+
+          // Conversion tracking (only if consent given)
+          if (window.gtag) {
+            window.gtag('event', 'conversion', {
+              send_to: window.CookieConsentConfig && window.CookieConsentConfig.adsConversionLabel
+            });
+          }
+          if (window.fbq) {
+            window.fbq('track', 'Lead');
+          }
         } else {
           throw new Error('Server error');
         }

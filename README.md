@@ -1,13 +1,13 @@
-# PV Magazyn — Landing Page B2B (Home Fit+)
+# Retrofit 24 — Landing Page B2B (Home Fit+)
 
-Landing page B2B dla Home Fit+ na domenie pv-magazyn.pl. Magazyn energii dla firm instalacyjnych PV na Podkarpaciu. Strona skierowana do instalatorów i firm fotowoltaicznych — program partnerski, szybki montaż w 2h, wsparcie z dotacjami i zgłoszeniami do sieci.
+Landing page B2B dla Home Fit+ na domenie retrofit24.pl. Magazyn energii dla firm instalacyjnych PV na Podkarpaciu. Strona skierowana do instalatorów i firm fotowoltaicznych — program partnerski, szybki montaż w 2h, wsparcie z dotacjami i zgłoszeniami do sieci.
 
 ## Tech Stack
 
 - **Plain HTML/CSS/JS** — no framework, no build step
 - **Vercel** — static hosting + serverless function for contact form
 - **Resend** — transactional email API for form submissions
-- **CookieYes** — cookie consent banner (GDPR)
+- **Custom cookie consent** — own RODO-compliant popup (no external dependencies)
 
 ## Project Structure
 
@@ -16,6 +16,7 @@ cellx_lp_b2b/
   index.html              # Single-page landing (all sections inline)
   privacy.html            # Polityka prywatności (RODO)
   css/styles.css          # Design system, layout, animations, responsive
+  js/cookies.js            # RODO cookie consent (banner, modal, script injection)
   js/main.js              # Scroll observers, nav, counters, FAQ accordion, form
   js/lightning.js          # Canvas hero animation (energy lightning bolts)
   api/send.js             # Vercel serverless function — Resend email
@@ -68,24 +69,59 @@ The form POSTs to `/api/send`, which is a Vercel serverless function that forwar
 
 **To set up Resend:**
 1. Create an account at [resend.com](https://resend.com)
-2. Add and verify your sending domain (e.g., `pv-magazyn.pl`)
+2. Add and verify your sending domain (e.g., `retrofit24.pl`)
 3. Generate an API key
 4. Add `RESEND_API_KEY` and `RECIPIENT_EMAIL` as Vercel environment variables
 
 **Email format:**
-- **From:** `Home Fit+ <noreply@pv-magazyn.pl>`
+- **From:** `Home Fit+ <noreply@retrofit24.pl>`
 - **Subject:** `Nowe zapytanie partnerskie Home Fit+ — [Name] z [City]`
 - **Reply-To:** submitter's email
 - Includes all form fields in a formatted HTML table
 
-## CookieYes Setup
+## Cookie Consent & Tracking Setup
 
-Cookie consent banner via [CookieYes](https://www.cookieyes.com). Script tag in `<head>` of `index.html` and `privacy.html`.
+Custom RODO-compliant cookie consent (`js/cookies.js`) — no external dependencies. Manages Google Ads and Meta Pixel injection based on user consent.
 
-Replace `TWOJ_KLUCZ` in both files with your CookieYes client key:
-```html
-<script id="cookieyes" src="https://cdn-cookieyes.com/client_data/TWOJ_KLUCZ/script.js"></script>
-```
+### How it works
+
+- First visit → banner slides up from bottom with 3 options: accept all, reject optional, settings
+- Settings modal → toggle switches for analytics (Google Ads) and marketing (Meta Pixel)
+- Consent stored in `localStorage` (key: `cookieConsent`), valid for 12 months
+- Scripts are injected programmatically only after consent — no tracking scripts in HTML
+- Footer link "Ustawienia cookies" reopens the settings modal at any time
+
+### Configuring Google Ads
+
+1. Get your Google Ads Conversion ID from [Google Ads](https://ads.google.com) → Tools → Conversions
+2. Open `js/cookies.js` and replace the placeholders (hardcoded, not env vars — these IDs are public):
+   ```js
+   var GOOGLE_ADS_ID = 'AW-123456789';                    // ← Conversion ID
+   var GOOGLE_ADS_CONVERSION_LABEL = 'AbCdEfGhIjKlMnOp';  // ← Conversion Label
+   ```
+3. Deploy
+
+### Configuring Meta Pixel
+
+1. Get your Pixel ID from [Meta Events Manager](https://business.facebook.com/events_manager)
+2. Open `js/cookies.js` and replace the placeholder:
+   ```js
+   var META_PIXEL_ID = '123456789012345'; // ← Pixel ID
+   ```
+3. Deploy
+
+### Conversion tracking
+
+After a successful form submission (`js/main.js`):
+- **Google Ads**: `gtag('event', 'conversion', { send_to: 'AW-XXX/LABEL' })` — only fires if user consented to analytics cookies
+- **Meta Pixel**: `fbq('track', 'Lead')` — only fires if user consented to marketing cookies
+
+### CSP (Content Security Policy)
+
+`vercel.json` already includes the required CSP directives for Google Ads and Meta Pixel:
+- `script-src`: `googletagmanager.com`, `connect.facebook.net`
+- `img-src`: `facebook.com`
+- `connect-src`: `google-analytics.com`, `facebook.com`
 
 ## Page Sections
 

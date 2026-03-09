@@ -1,5 +1,5 @@
 /**
- * Home Fit+ Hero Lightning Canvas Animation (pv-magazyn.pl)
+ * Home Fit+ Hero Lightning Canvas Animation (retrofit24.pl)
  * Generates animated lightning bolts in green/blue representing energy flow
  */
 (function () {
