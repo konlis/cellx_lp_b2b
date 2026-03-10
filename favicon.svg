@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#1d1d1f"/>
+  <text x="16" y="15" font-family="Arial,sans-serif" font-weight="800" font-size="11" fill="#7ed957" text-anchor="middle">Retro</text>
+  <text x="16" y="27" font-family="Arial,sans-serif" font-weight="800" font-size="11" text-anchor="middle">
+    <tspan fill="#ffffff">Fit</tspan><tspan fill="#7ed957">24</tspan>
+  </text>
+</svg>
