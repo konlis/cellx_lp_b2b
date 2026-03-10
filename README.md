@@ -7,6 +7,8 @@ Landing page B2B dla Home Fit+ na domenie retrofit24.pl. Magazyn energii dla fir
 - **Plain HTML/CSS/JS** — no framework, no build step
 - **Vercel** — static hosting + serverless function for contact form
 - **Resend** — transactional email API for form submissions
+- **Google Tag Manager (GTM)** — centralized tag management (GA4, Google Ads, Meta Pixel, Leadinfo)
+- **Google Consent Mode v2** — consent signal handling for all GTM tags
 - **Custom cookie consent** — own RODO-compliant popup (no external dependencies)
 
 ## Project Structure
@@ -16,7 +18,7 @@ cellx_lp_b2b/
   index.html              # Single-page landing (all sections inline)
   privacy.html            # Polityka prywatności (RODO)
   css/styles.css          # Design system, layout, animations, responsive
-  js/cookies.js            # RODO cookie consent (banner, modal, script injection)
+  js/cookies.js            # RODO cookie consent (banner, modal, Consent Mode v2 updates)
   js/main.js              # Scroll observers, nav, counters, FAQ accordion, form
   js/lightning.js          # Canvas hero animation (energy lightning bolts)
   api/send.js             # Vercel serverless function — Resend email
@@ -81,44 +83,145 @@ The form POSTs to `/api/send`, which is a Vercel serverless function that forwar
 
 ## Cookie Consent & Tracking Setup
 
-Custom RODO-compliant cookie consent (`js/cookies.js`) — no external dependencies. Manages Google Ads and Meta Pixel injection based on user consent.
+Custom RODO-compliant cookie consent (`js/cookies.js`) — no external dependencies. Uses Google Tag Manager (GTM) with Consent Mode v2 for all tracking tags.
 
 ### How it works
 
+- **Consent Mode v2 defaults** are set in `<head>` before GTM loads — all consent categories start as `denied`
+- **GTM loads on every page** (`index.html`, `privacy.html`) — manages all tags (GA4, Google Ads, Meta Pixel, Leadinfo) centrally
 - First visit → banner slides up from bottom with 3 options: accept all, reject optional, settings
-- Settings modal → toggle switches for analytics (Google Ads) and marketing (Meta Pixel)
+- Settings modal → toggle switches for analytics (Google Ads, GA4, Leadinfo) and marketing (Meta Pixel)
 - Consent stored in `localStorage` (key: `cookieConsent`), valid for 12 months
-- Scripts are injected programmatically only after consent — no tracking scripts in HTML
+- On consent change → `gtag('consent', 'update', ...)` fires with granted/denied signals — GTM tags respond automatically
+- No tracking scripts are injected by JS — GTM handles all script loading based on consent signals
 - Footer link "Ustawienia cookies" reopens the settings modal at any time
 
-### Configuring Google Ads
+### Configuring GTM
 
-1. Get your Google Ads Conversion ID from [Google Ads](https://ads.google.com) → Tools → Conversions
-2. Open `js/cookies.js` and replace the placeholders (hardcoded, not env vars — these IDs are public):
+All tracking tags (GA4, Google Ads, Meta Pixel, Leadinfo) are managed inside GTM — not hardcoded in JS. To configure:
+
+1. Create a GTM container at [tagmanager.google.com](https://tagmanager.google.com)
+2. Replace the placeholder GTM ID in three places:
+   - `index.html` — GTM snippet in `<head>` and `<noscript>` in `<body>`
+   - `privacy.html` — same GTM snippet and `<noscript>`
+   - `js/cookies.js` — `CookieConsentConfig.gtmId` (line 9)
    ```js
-   var GOOGLE_ADS_ID = 'AW-123456789';                    // ← Conversion ID
-   var GOOGLE_ADS_CONVERSION_LABEL = 'AbCdEfGhIjKlMnOp';  // ← Conversion Label
+   window.CookieConsentConfig = { gtmId: 'GTM-XXXXXXX' }; // ← your GTM container ID
    ```
-3. Deploy
+3. Configure tags inside GTM (see step-by-step below)
+4. Publish the GTM container and deploy
 
-### Configuring Meta Pixel
+### Adding tags in GTM (step-by-step)
 
-1. Get your Pixel ID from [Meta Events Manager](https://business.facebook.com/events_manager)
-2. Open `js/cookies.js` and replace the placeholder:
-   ```js
-   var META_PIXEL_ID = '123456789012345'; // ← Pixel ID
+#### A. Google Analytics 4 (GA4)
+
+1. W GTM: **Tags** → **New** → **Tag Configuration** → **Google Analytics: GA4 Configuration**
+2. Wpisz swój **Measurement ID** (`G-XXXXXXX`) — znajdziesz go w [analytics.google.com](https://analytics.google.com) → Admin → Data Streams → twój stream
+3. **Triggering** → **All Pages**
+4. **Consent Settings** (ikona tarczy w tagu):
+   - Kliknij **Require additional consent for tag to fire**
+   - Dodaj: `analytics_storage`
+5. Zapisz tag jako np. "GA4 — Configuration"
+
+#### B. Google Ads Conversion
+
+1. W GTM: **Tags** → **New** → **Tag Configuration** → **Google Ads Conversion Tracking**
+2. Wpisz:
+   - **Conversion ID**: `AW-XXXXXXXXX` (z Google Ads → Tools → Conversions → twoja konwersja → Tag setup)
+   - **Conversion Label**: `AbCdEfGhIjKlMnOp` (z tego samego miejsca)
+3. **Triggering** → **New Trigger**:
+   - Typ: **Custom Event**
+   - Event name: `form_submission`
+   - Zapisz trigger jako "Form Submission"
+4. **Consent Settings**:
+   - **Require additional consent**: `ad_storage`
+5. Zapisz tag jako np. "Google Ads — Form Conversion"
+
+#### C. Meta Pixel
+
+1. W GTM: **Tags** → **New** → **Tag Configuration** → **Custom HTML**
+2. Wklej kod:
+   ```html
+   <script>
+   !function(f,b,e,v,n,t,s)
+   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+   n.queue=[];t=b.createElement(e);t.async=!0;
+   t.src=v;s=b.getElementsByTagName(e)[0];
+   s.parentNode.insertBefore(t,s)}(window, document,'script',
+   'https://connect.facebook.net/en_US/fbevents.js');
+   fbq('init', 'XXXXXXXXXXXXXXXXX');
+   fbq('track', 'PageView');
+   </script>
    ```
-3. Deploy
+   Zamień `XXXXXXXXXXXXXXXXX` na swój Pixel ID (z [Meta Events Manager](https://business.facebook.com/events_manager) → Data Sources → twój Pixel)
+3. **Triggering** → **All Pages**
+4. **Consent Settings**:
+   - **Require additional consent**: `ad_personalization`
+5. Zapisz tag jako np. "Meta Pixel — PageView"
+
+**Meta Pixel — Lead event (po wysłaniu formularza):**
+
+1. **Tags** → **New** → **Custom HTML**:
+   ```html
+   <script>
+   fbq('track', 'Lead');
+   </script>
+   ```
+2. **Triggering** → wybierz trigger "Form Submission" (ten sam co przy Google Ads, event: `form_submission`)
+3. **Consent Settings**: `ad_personalization`
+4. Zapisz jako "Meta Pixel — Lead"
+
+#### D. Leadinfo
+
+1. W GTM: **Tags** → **New** → **Custom HTML**
+2. Wklej skrypt trackingowy z panelu [Leadinfo](https://app.leadinfo.com) → Settings → Tracking Script (będzie wyglądał mniej więcej tak):
+   ```html
+   <script>
+   (function(l,e,a,d,i,n,f,o){/* ... skrypt Leadinfo ... */})(window,document,'https://cdn.leadinfo.net/ping.js','XXXXXX');
+   </script>
+   ```
+3. **Triggering** → **All Pages**
+4. **Consent Settings**:
+   - **Require additional consent**: `analytics_storage`
+5. Zapisz jako "Leadinfo — Tracking"
+
+### Consent Mode — jak to działa w GTM
+
+Strona ustawia Consent Mode v2 defaults w `<head>` (wszystko `denied`). Gdy użytkownik wyrazi zgodę, `js/cookies.js` wysyła:
+
+```js
+gtag('consent', 'update', {
+  'analytics_storage': 'granted',   // ← toggle "Analityczne"
+  'ad_storage': 'granted',          // ← toggle "Analityczne"
+  'ad_user_data': 'granted',        // ← toggle "Analityczne"
+  'ad_personalization': 'granted'   // ← toggle "Marketingowe"
+});
+```
+
+GTM automatycznie reaguje na te sygnały — tagi z ustawionym `Require additional consent` odpalą się dopiero po `granted`. Nie musisz tworzyć własnych triggerów na consent — GTM robi to sam.
+
+| Toggle w bannerze | Consent signals → granted | Tagi które się odpalą |
+|---|---|---|
+| Analityczne ✅ | `analytics_storage`, `ad_storage`, `ad_user_data` | GA4, Google Ads, Leadinfo |
+| Marketingowe ✅ | `ad_personalization` | Meta Pixel |
+| Oba ❌ | (wszystko `denied`) | Żaden tag nie odpala |
 
 ### Conversion tracking
 
-After a successful form submission (`js/main.js`):
-- **Google Ads**: `gtag('event', 'conversion', { send_to: 'AW-XXX/LABEL' })` — only fires if user consented to analytics cookies
-- **Meta Pixel**: `fbq('track', 'Lead')` — only fires if user consented to marketing cookies
+Po wysłaniu formularza (`js/main.js`) strona pushuje event do dataLayer:
+```js
+window.dataLayer.push({
+  'event': 'form_submission',
+  'form_type': 'contact'
+});
+```
+Tagi Google Ads Conversion i Meta Pixel Lead (skonfigurowane powyżej) triggerują się na ten event — ale tylko jeśli użytkownik wyraził odpowiednią zgodę.
 
 ### CSP (Content Security Policy)
 
-`vercel.json` already includes the required CSP directives for Google Ads and Meta Pixel:
+`vercel.json` includes CSP directives for GTM and its managed tags:
 - `script-src`: `googletagmanager.com`, `connect.facebook.net`
 - `img-src`: `facebook.com`
 - `connect-src`: `google-analytics.com`, `facebook.com`
