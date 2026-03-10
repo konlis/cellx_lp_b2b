@@ -231,15 +231,12 @@
           statusEl.style.display = 'block';
           form.reset();
 
-          // Conversion tracking (only if consent given)
-          if (window.gtag) {
-            window.gtag('event', 'conversion', {
-              send_to: window.CookieConsentConfig && window.CookieConsentConfig.adsConversionLabel
-            });
-          }
-          if (window.fbq) {
-            window.fbq('track', 'Lead');
-          }
+          // Conversion tracking via GTM dataLayer
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            'event': 'form_submission',
+            'form_type': 'contact'
+          });
         } else {
           throw new Error('Server error');
         }

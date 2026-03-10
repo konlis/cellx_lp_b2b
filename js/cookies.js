@@ -3,14 +3,10 @@
 
   // ---- Configuration ----
   var STORAGE_KEY = 'cookieConsent';
-  var CONSENT_VERSION = 1;
+  var CONSENT_VERSION = 2;
   var CONSENT_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000; // 12 months
-  var GOOGLE_ADS_ID = 'AW-XXXXXXXXXX'; // Replace with real ID
-  var GOOGLE_ADS_CONVERSION_LABEL = 'XXXXXXXXXXXXXXXXXXX'; // Replace with real label
-  var META_PIXEL_ID = 'XXXXXXXXXXXXXXX'; // Replace with real ID
 
-  var googleAdsInjected = false;
-  var metaPixelInjected = false;
+  window.CookieConsentConfig = { gtmId: 'GTM-XXXXXXX' };
 
   // ---- Consent Storage ----
   function getConsent() {
@@ -43,47 +39,18 @@
     return true;
   }
 
-  // ---- Script Injection ----
-  function injectGoogleAds() {
-    if (googleAdsInjected) return;
-    googleAdsInjected = true;
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ADS_ID;
-    document.head.appendChild(s);
-
+  // ---- Consent Mode v2 Update ----
+  function applyConsent(consent) {
     window.dataLayer = window.dataLayer || [];
     function gtag() { window.dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', GOOGLE_ADS_ID);
-  }
 
-  function injectMetaPixel() {
-    if (metaPixelInjected) return;
-    metaPixelInjected = true;
-    !function(f,b,e,v,n,t,s) {
-      if(f.fbq) return;
-      n = f.fbq = function() { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
-      if(!f._fbq) f._fbq = n;
-      n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = [];
-      t = b.createElement(e); t.async = !0; t.src = v;
-      s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
-    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    window.fbq('init', META_PIXEL_ID);
-    window.fbq('track', 'PageView');
+    gtag('consent', 'update', {
+      'analytics_storage': consent.analytics ? 'granted' : 'denied',
+      'ad_storage': consent.analytics ? 'granted' : 'denied',
+      'ad_user_data': consent.analytics ? 'granted' : 'denied',
+      'ad_personalization': consent.marketing ? 'granted' : 'denied'
+    });
   }
-
-  function applyConsent(consent) {
-    if (consent.analytics) injectGoogleAds();
-    if (consent.marketing) injectMetaPixel();
-  }
-
-  // Expose conversion label for form tracking in main.js
-  window.CookieConsentConfig = {
-    adsConversionLabel: GOOGLE_ADS_ID + '/' + GOOGLE_ADS_CONVERSION_LABEL
-  };
 
   // ---- UI: Banner ----
   var bannerEl = null;

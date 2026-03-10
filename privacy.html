@@ -10,6 +10,31 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Consent Mode v2 defaults -->
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied',
+    'functionality_storage': 'granted',
+    'personalization_storage': 'denied',
+    'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  </script>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  <!-- End Google Tag Manager -->
+
   <style>
     .privacy-page {
       padding: 120px 0 80px;
@@ -46,6 +71,10 @@
   </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <nav class="navbar" role="navigation" aria-label="Nawigacja główna">
   <div class="container">
@@ -61,7 +90,7 @@
 <section class="privacy-page">
   <div class="container">
     <h1>Polityka prywatności</h1>
-    <p>Ostatnia aktualizacja: 6 marca 2026 r.</p>
+    <p>Ostatnia aktualizacja: 10 marca 2026 r.</p>
 
     <h2>1. Administrator danych</h2>
     <p>Administratorem Twoich danych osobowych jest <strong>Eco-Sol Sp. z o.o.</strong>, NIP: 5170405595, REGON: 385705742, KRS: 0000832381.</p>
@@ -98,8 +127,9 @@
     <ul>
       <li>Dostawcy usługi e-mail (Resend.com) — w celu dostarczenia wiadomości z formularza</li>
       <li>Dostawcy hostingu (Vercel Inc.) — w zakresie niezbędnym do działania strony</li>
-      <li>Google Ireland Limited — w zakresie śledzenia konwersji reklamowych (Google Ads), wyłącznie po wyrażeniu zgody na cookies analityczne</li>
+      <li>Google Ireland Limited — w zakresie śledzenia konwersji reklamowych (Google Ads), analityki ruchu (Google Analytics 4) oraz zarządzania tagami (Google Tag Manager), wyłącznie po wyrażeniu zgody na cookies analityczne</li>
       <li>Meta Platforms Ireland Limited — w zakresie remarketingu (Meta Pixel), wyłącznie po wyrażeniu zgody na cookies marketingowe</li>
+      <li>Leadinfo BV — w zakresie identyfikacji firm odwiedzających stronę (analityka B2B), wyłącznie po wyrażeniu zgody na cookies analityczne</li>
     </ul>
     <p>Nie sprzedajemy, nie udostępniamy i nie przekazujemy danych osobom trzecim w celach marketingowych bez Twojej wyraźnej zgody.</p>
 
@@ -122,18 +152,20 @@
     <h2>8. Prawo do skargi</h2>
     <p>Masz prawo wnieść skargę do Prezesa Urzędu Ochrony Danych Osobowych (ul. Stawki 2, 00-193 Warszawa), jeśli uznasz, że przetwarzanie danych narusza przepisy RODO.</p>
 
-    <h2>9. Pliki cookies</h2>
-    <p>Strona retrofit24.pl wykorzystuje pliki cookies podzielone na następujące kategorie:</p>
+    <h2>9. Pliki cookies i technologie śledzenia</h2>
+    <p>Strona retrofit24.pl wykorzystuje Google Tag Manager (GTM) jako centralny system zarządzania tagami oraz Google Consent Mode v2 do zarządzania zgodami. Pliki cookies podzielone są na następujące kategorie:</p>
     <ul>
       <li><strong>Niezbędne</strong> — zapamiętanie Twoich preferencji dotyczących cookies (localStorage). Zawsze aktywne, nie wymagają zgody.</li>
-      <li><strong>Analityczne</strong> — Google Ads (gtag.js) — śledzenie konwersji reklamowych i mierzenie skuteczności kampanii. Po wysłaniu formularza kontaktowego rejestrowana jest konwersja (zdarzenie „conversion"). Włączane wyłącznie po wyrażeniu zgody.</li>
+      <li><strong>Analityczne</strong> — Google Analytics 4 (GA4) — analityka ruchu na stronie i zachowań użytkowników. Google Ads — śledzenie konwersji reklamowych i mierzenie skuteczności kampanii. Leadinfo — identyfikacja firm odwiedzających stronę w celach B2B (nie identyfikuje osób fizycznych). Włączane wyłącznie po wyrażeniu zgody.</li>
       <li><strong>Marketingowe</strong> — Meta Pixel (Facebook) — remarketing na Facebooku i Instagramie. Po wysłaniu formularza kontaktowego rejestrowane jest zdarzenie „Lead". Włączane wyłącznie po wyrażeniu zgody.</li>
     </ul>
+    <p><strong>Google Tag Manager</strong> sam w sobie nie zbiera danych osobowych ani nie ustawia cookies — jest narzędziem do zarządzania innymi tagami (skryptami śledzącymi). Wszystkie tagi uruchamiane przez GTM podlegają Twoim wyborom dotyczącym cookies.</p>
     <p><strong>Jak zarządzać cookies:</strong> Przy pierwszej wizycie wyświetlamy banner z możliwością akceptacji, odrzucenia lub konfiguracji poszczególnych kategorii. W dowolnym momencie możesz zmienić swoje preferencje, klikając link „Ustawienia cookies" w stopce strony.</p>
     <p>Więcej informacji o cookies zewnętrznych dostawców:</p>
     <ul>
       <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Polityka prywatności Google</a></li>
       <li><a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Polityka prywatności Meta</a></li>
+      <li><a href="https://www.leadinfo.com/en/privacy/" target="_blank" rel="noopener">Polityka prywatności Leadinfo</a></li>
     </ul>
 
     <h2>10. Zmiany polityki prywatności</h2>
