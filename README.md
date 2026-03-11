@@ -106,7 +106,7 @@ All tracking tags (GA4, Google Ads, Meta Pixel, Leadinfo) are managed inside GTM
    - `privacy.html` — same GTM snippet and `<noscript>`
    - `js/cookies.js` — `CookieConsentConfig.gtmId` (line 9)
    ```js
-   window.CookieConsentConfig = { gtmId: 'GTM-XXXXXXX' }; // ← your GTM container ID
+   window.CookieConsentConfig = { gtmId: 'GTM-NS999GV4' }; // ← your GTM container ID
    ```
 3. Configure tags inside GTM (see step-by-step below)
 4. Publish the GTM container and deploy

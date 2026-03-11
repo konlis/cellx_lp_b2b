@@ -6,7 +6,7 @@
   var CONSENT_VERSION = 2;
   var CONSENT_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000; // 12 months
 
-  window.CookieConsentConfig = { gtmId: 'GTM-XXXXXXX' };
+  window.CookieConsentConfig = { gtmId: 'GTM-NS999GV4' };
 
   // ---- Consent Storage ----
   function getConsent() {
