@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+  <!-- White top half -->
+  <rect width="200" height="60" fill="#ffffff"/>
+  <!-- Red bottom half -->
+  <rect y="60" width="200" height="60" fill="#DC143C"/>
+  <!-- "PRODUKT" text — red on white -->
+  <text x="100" y="42" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="36" fill="#DC143C" letter-spacing="1">PRODUKT</text>
+  <!-- "POLSKI" text — white on red -->
+  <text x="100" y="104" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="42" fill="#ffffff" letter-spacing="2">POLSKI</text>
+</svg>
