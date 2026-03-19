@@ -433,14 +433,19 @@ h3 {
   fill: var(--gray-600);
 }
 
-.cert-item--flag {
-  color: var(--gray-200);
+.cert-item--logo {
+  padding: 0;
 }
 
-.cert-item--flag svg {
-  fill: unset;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
-  border-radius: 2px;
+.polski-producent-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0.95);
+}
+
+.polski-producent-logo--footer {
+  height: 28px;
 }
 
 /* --- Section Common --- */
