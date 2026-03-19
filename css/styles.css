@@ -433,6 +433,16 @@ h3 {
   fill: var(--gray-600);
 }
 
+.cert-item--flag {
+  color: var(--gray-200);
+}
+
+.cert-item--flag svg {
+  fill: unset;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+  border-radius: 2px;
+}
+
 /* --- Section Common --- */
 .section {
   padding: var(--section-padding) 0;
@@ -513,6 +523,93 @@ h3 {
 }
 
 .context-card p {
+  font-size: 0.9rem;
+  color: var(--gray-400);
+  line-height: 1.6;
+}
+
+/* --- Product Explainer (Co to jest / Jak działa) --- */
+.product-explainer {
+  background: var(--black-deep);
+  padding-bottom: 40px;
+}
+
+.explainer-definition {
+  max-width: 780px;
+  margin: 0 auto 48px;
+  padding: 28px 32px;
+  background: var(--black-card);
+  border-left: 4px solid var(--green);
+  border-radius: var(--radius-md);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-right: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.explainer-definition p {
+  font-size: 1.05rem;
+  color: var(--gray-200);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.explainer-definition strong {
+  color: var(--green);
+}
+
+.explainer-how-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.explainer-how-header h3 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: var(--fw-bold);
+}
+
+.explainer-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.explainer-step {
+  background: var(--black-card);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all var(--transition-medium);
+}
+
+.explainer-step:hover {
+  background: var(--black-card-hover);
+  box-shadow: var(--shadow-glow-green);
+  transform: translateY(-4px);
+}
+
+.explainer-step-number {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 1.2rem;
+  font-weight: var(--fw-bold);
+  color: var(--green);
+  box-shadow: 0 0 20px rgba(126,217,87,0.12);
+}
+
+.explainer-step h4 {
+  font-size: 1.05rem;
+  font-weight: var(--fw-semi);
+  margin-bottom: 10px;
+}
+
+.explainer-step p {
   font-size: 0.9rem;
   color: var(--gray-400);
   line-height: 1.6;
@@ -1533,6 +1630,10 @@ h3 {
   }
 
   .context-cards { grid-template-columns: 1fr; }
+
+  .explainer-steps { grid-template-columns: 1fr; }
+
+  .explainer-definition p { padding: 0; }
 
   .steps-grid {
     grid-template-columns: 1fr;
